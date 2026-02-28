@@ -1,0 +1,9 @@
+REQUIRED LIBRARIES FOR THIS CODE: 
+
+requests
+matplotlib
+pandas 
+plyer
+pytest
+colorama
+rich
