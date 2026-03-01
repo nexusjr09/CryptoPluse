@@ -14,7 +14,8 @@ def main():
     print(f"24h change:",change_within_24hr(data))
     print(f"Market Cap: ${marketcap(data)}")
     print(f"Volume (24h): ${volume(data)}")
-
+    supply,maxSupply = circulatingsupply(data)
+    print(f"Circulating Supply: {supply} / {maxSupply}")
 
 def coin_price(input,data):
 
@@ -50,7 +51,10 @@ def volume(data):
         return formattedvol
 
 def circulatingsupply(data):
-    ...
-
+    for item in data["data"]:
+        supply = numerize.numerize(float(item["supply"]))
+        maxsupply = numerize.numerize(float(item["maxSupply"]))
+        return supply,maxsupply
+        
 if __name__ == "__main__":
     main()
