@@ -1,5 +1,7 @@
 import requests
 import sys
+from numerize import numerize
+
 def main():
     coin_input = input("Enter coin name or symbol (e.g., bitcoin, BTC): ").lower().strip()
     if coin_input.isdigit():
@@ -9,7 +11,9 @@ def main():
     data = response.json()
     print(f"{coin_input.upper()}: #{rank(coin_input,data)}")
     print(f"Price: ${coin_price(coin_input,data)}")
-    print(f"24h change:",change_within_24hr(coin_input,data))
+    print(f"24h change:",change_within_24hr(data))
+    print(f"Market Cap: ${marketcap(data)}")
+    print(f"Volume (24h): ${volume(data)}")
 
 
 def coin_price(input,data):
@@ -27,11 +31,26 @@ def rank(input,data):
         return rank
 
 
-def change_within_24hr(input,data):
+def change_within_24hr(data):
     for item in data["data"]: 
         change = float(item["changePercent24Hr"])
         change = round(change,3)
         return change 
-        
+
+def marketcap(data):
+    for item in data["data"]:
+        cap = float(item["marketCapUsd"])
+        formatted = numerize.numerize(cap)
+        return formatted
+
+def volume(data):
+    for item in data["data"]:
+        vol =  float(item["volumeUsd24Hr"])
+        formattedvol = numerize.numerize(vol)
+        return formattedvol
+
+def circulatingsupply(data):
+    ...
+
 if __name__ == "__main__":
     main()
