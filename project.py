@@ -1,3 +1,7 @@
+from rich.console import Console
+from rich.table import Table
+from rich.panel import Panel
+from rich import print
 import requests
 import sys
 from numerize import numerize
