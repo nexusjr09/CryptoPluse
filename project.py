@@ -9,12 +9,11 @@ from rich.align import Align
 from rich import print as rprint
 from dotenv import load_dotenv
 
-load_dotenv() #looks for the .env file
+load_dotenv()
 
 console = Console()
 
 def main():
-    # ASCII Art Header
     console.print(Panel.fit(
         "[bold cyan]🚀 CRYPTOPULSE TERMINAL[/bold cyan]\n[dim]Live Market Data Engine[/dim]",
         border_style="blue"
@@ -22,13 +21,16 @@ def main():
 
     coin_input = input("\nEnter coin name or symbol (e.g., bitcoin, BTC): ").lower().strip()
     
-    if coin_input.isdigit():
+    if not coin_input or coin_input.isdigit():
          sys.exit("[bold red]Error:[/] Invalid Input")
 
     with console.status("[bold green]Fetching live data...") as status:
-        url = "https://rest.coincap.io/v3/assets?apiKey=353debcd0dbc55a8a2f151d3c6984de7d5b0a7cadb17d42a054ebf7ed3f2038b"# Use v2 for better reliability
+        api_key = os.getenv("COINCAP_API_KEY")
+        url = f"https://rest.coincap.io/v3/assets?apiKey={api_key}"
+        
         try:
             response = requests.get(url)
+            response.raise_for_status()
             data = response.json()["data"]
         except Exception as e:
             sys.exit(f"[bold red]API Error:[/] {e}")
@@ -45,16 +47,13 @@ def main():
     display_dashboard(coin_data)
 
 def display_dashboard(coin):
-
     name = f"[bold yellow]{coin['name']} ({coin['symbol']})[/]"
     price = f"[bold green]${float(coin['priceUsd']):,.2f}[/]"
     
-   
     change_val = float(coin['changePercent24Hr'])
     change_color = "[bold green]" if change_val > 0 else "[bold red]"
     change_str = f"{change_color}{change_val:+.2f}%[/]"
 
-    # 2. Create the Statistics Table
     table = Table(title=f"Market Stats for {coin['name']}", title_style="bold magenta", border_style="bright_blue")
     
     table.add_column("Metric", style="cyan", no_wrap=True)
@@ -66,12 +65,10 @@ def display_dashboard(coin):
     table.add_row("Market Cap", f"${numerize.numerize(float(coin['marketCapUsd']))}")
     table.add_row("Volume (24h)", f"${numerize.numerize(float(coin['volumeUsd24Hr']))}")
     
-    
     supply = numerize.numerize(float(coin['supply']))
     max_supply = numerize.numerize(float(coin['maxSupply'])) if coin['maxSupply'] else "N/A"
     table.add_row("Circulating Supply", f"{supply} / {max_supply}")
 
-    
     console.print(table)
     console.print(Align.center(f"[dim]Data provided by CoinCap API • Last updated: Just now[/dim]"))
 
