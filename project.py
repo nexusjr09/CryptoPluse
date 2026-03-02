@@ -29,7 +29,6 @@ def main():
         except Exception as e:
             sys.exit(f"[bold red]API Error:[/] {e}")
 
-    # FIND THE COIN DATA ONCE
     coin_data = None
     for item in data:
         if coin_input == item["id"].lower() or coin_input == item["symbol"].lower():
