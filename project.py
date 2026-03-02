@@ -1,4 +1,5 @@
 import requests
+import os 
 import sys
 from numerize import numerize
 from rich.console import Console
@@ -6,6 +7,9 @@ from rich.table import Table
 from rich.panel import Panel
 from rich.align import Align
 from rich import print as rprint
+from dotenv import load_dotenv
+
+load_dotenv() #looks for the .env file
 
 console = Console()
 
