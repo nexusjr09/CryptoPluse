@@ -1,64 +1,76 @@
-from rich.console import Console
-from rich.table import Table
-from rich.panel import Panel
-from rich import print
 import requests
 import sys
 from numerize import numerize
+from rich.console import Console
+from rich.table import Table
+from rich.panel import Panel
+from rich.align import Align
+from rich import print as rprint
+
+console = Console()
 
 def main():
-    coin_input = input("Enter coin name or symbol (e.g., bitcoin, BTC): ").lower().strip()
-    if coin_input.isdigit():
-         sys.exit("Invalid Input")
-    url = "https://rest.coincap.io/v3/assets?apiKey=353debcd0dbc55a8a2f151d3c6984de7d5b0a7cadb17d42a054ebf7ed3f2038b"
-    response = requests.get(url)
-    data = response.json()
-    print(f"{coin_input.upper()}: #{rank(coin_input,data)}")
-    print(f"Price: ${coin_price(coin_input,data)}")
-    print(f"24h change:",change_within_24hr(data))
-    print(f"Market Cap: ${marketcap(data)}")
-    print(f"Volume (24h): ${volume(data)}")
-    supply,maxSupply = circulatingsupply(data)
-    print(f"Circulating Supply: {supply} / {maxSupply}")
+    # ASCII Art Header
+    console.print(Panel.fit(
+        "[bold cyan]🚀 CRYPTOPULSE TERMINAL[/bold cyan]\n[dim]Live Market Data Engine[/dim]",
+        border_style="blue"
+    ))
 
-def coin_price(input,data):
-
-    for item in data["data"]:
-        if input == item["id"].lower() or input == item["symbol"].lower():
-            price = float(item["priceUsd"])
-            return price
+    coin_input = input("\nEnter coin name or symbol (e.g., bitcoin, BTC): ").lower().strip()
     
-    sys.exit("Coudn't find the coin !")
+    if coin_input.isdigit():
+         sys.exit("[bold red]Error:[/] Invalid Input")
 
-def rank(input,data):
-    for item in data["data"]:
-        rank = item["rank"]
-        return rank
+    with console.status("[bold green]Fetching live data...") as status:
+        url = "https://rest.coincap.io/v3/assets?apiKey=353debcd0dbc55a8a2f151d3c6984de7d5b0a7cadb17d42a054ebf7ed3f2038b"# Use v2 for better reliability
+        try:
+            response = requests.get(url)
+            data = response.json()["data"]
+        except Exception as e:
+            sys.exit(f"[bold red]API Error:[/] {e}")
 
+    # FIND THE COIN DATA ONCE
+    coin_data = None
+    for item in data:
+        if coin_input == item["id"].lower() or coin_input == item["symbol"].lower():
+            coin_data = item
+            break
+    
+    if not coin_data:
+        sys.exit("[bold red]Error:[/] Couldn't find the coin!")
 
-def change_within_24hr(data):
-    for item in data["data"]: 
-        change = float(item["changePercent24Hr"])
-        change = round(change,3)
-        return change 
+    display_dashboard(coin_data)
 
-def marketcap(data):
-    for item in data["data"]:
-        cap = float(item["marketCapUsd"])
-        formatted = numerize.numerize(cap)
-        return formatted
+def display_dashboard(coin):
+    # 1. Prepare formatted data
+    name = f"[bold yellow]{coin['name']} ({coin['symbol']})[/]"
+    price = f"[bold green]${float(coin['priceUsd']):,.2f}[/]"
+    
+    # Color-coded 24h change
+    change_val = float(coin['changePercent24Hr'])
+    change_color = "[bold green]" if change_val > 0 else "[bold red]"
+    change_str = f"{change_color}{change_val:+.2f}%[/]"
 
-def volume(data):
-    for item in data["data"]:
-        vol =  float(item["volumeUsd24Hr"])
-        formattedvol = numerize.numerize(vol)
-        return formattedvol
+    # 2. Create the Statistics Table
+    table = Table(title=f"Market Stats for {coin['name']}", title_style="bold magenta", border_style="bright_blue")
+    
+    table.add_column("Metric", style="cyan", no_wrap=True)
+    table.add_column("Value", justify="right", style="white")
 
-def circulatingsupply(data):
-    for item in data["data"]:
-        supply = numerize.numerize(float(item["supply"]))
-        maxsupply = numerize.numerize(float(item["maxSupply"]))
-        return supply,maxsupply
-        
+    table.add_row("Rank", f"#{coin['rank']}")
+    table.add_row("Price", price)
+    table.add_row("24h Change", change_str)
+    table.add_row("Market Cap", f"${numerize.numerize(float(coin['marketCapUsd']))}")
+    table.add_row("Volume (24h)", f"${numerize.numerize(float(coin['volumeUsd24Hr']))}")
+    
+    # Supply formatting
+    supply = numerize.numerize(float(coin['supply']))
+    max_supply = numerize.numerize(float(coin['maxSupply'])) if coin['maxSupply'] else "N/A"
+    table.add_row("Circulating Supply", f"{supply} / {max_supply}")
+
+    # 3. Print the Output
+    console.print(table)
+    console.print(Align.center(f"[dim]Data provided by CoinCap API • Last updated: Just now[/dim]"))
+
 if __name__ == "__main__":
     main()
