@@ -42,11 +42,11 @@ def main():
     display_dashboard(coin_data)
 
 def display_dashboard(coin):
-    # 1. Prepare formatted data
+
     name = f"[bold yellow]{coin['name']} ({coin['symbol']})[/]"
     price = f"[bold green]${float(coin['priceUsd']):,.2f}[/]"
     
-    # Color-coded 24h change
+   
     change_val = float(coin['changePercent24Hr'])
     change_color = "[bold green]" if change_val > 0 else "[bold red]"
     change_str = f"{change_color}{change_val:+.2f}%[/]"
@@ -63,12 +63,12 @@ def display_dashboard(coin):
     table.add_row("Market Cap", f"${numerize.numerize(float(coin['marketCapUsd']))}")
     table.add_row("Volume (24h)", f"${numerize.numerize(float(coin['volumeUsd24Hr']))}")
     
-    # Supply formatting
+    
     supply = numerize.numerize(float(coin['supply']))
     max_supply = numerize.numerize(float(coin['maxSupply'])) if coin['maxSupply'] else "N/A"
     table.add_row("Circulating Supply", f"{supply} / {max_supply}")
 
-    # 3. Print the Output
+    
     console.print(table)
     console.print(Align.center(f"[dim]Data provided by CoinCap API • Last updated: Just now[/dim]"))
 
