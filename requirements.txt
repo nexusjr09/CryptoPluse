@@ -1,10 +1,7 @@
 REQUIRED LIBRARIES FOR THIS CODE: 
 
+default os
 requests
-matplotlib
-pandas 
-plyer
 pytest
-colorama
 rich
 numerize
