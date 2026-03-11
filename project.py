@@ -10,3 +10,4 @@ for item in formatted["data"]:
     if coin == item["symbol"] or coin == item["name"]:
         print(item["priceUsd"])
  
+
