@@ -1,4 +1,5 @@
 import requests 
+import time
 import os
 import sys
 from numerize import numerize
@@ -15,17 +16,17 @@ def main():
      data = requests.get(url)
      formatted = data.json()
      dict_data = find_coin(coin_input,formatted)
-     
 
-     print("<-------------------------->")
-     print(f"Rank: {rank_coin(dict_data)}")
-     print(f"Price: ${coin_price(dict_data)}")
-     print(f"Circulating Supply: {supply(dict_data)}")
-     print(f"Max Supply: {maxsupply(dict_data)}")
-     print(f"Volume USD: {volume_usd(dict_data)}")
-     print(f"24Hr Change percent: {change_percent(dict_data)}%")
-     print("<------------------------------->")
-
+     print("Fetching data....🔄")
+     time.sleep(2)
+     print("----------------------------")
+     type_text(f"Rank: {rank_coin(dict_data)}",0.03)
+     type_text(f"Price: ${coin_price(dict_data)}",0.03)
+     type_text(f"Circulating Supply: {supply(dict_data)}",0.03)
+     type_text(f"Max Supply: {maxsupply(dict_data)}",0.03)
+     type_text(f"Volume USD: {volume_usd(dict_data)}",0.03)
+     type_text(f"24Hr Change percent: {change_percent(dict_data)}%",0.03)
+     print("-------------------------------")
 
 def find_coin(coin_input,formatted):
      for item in formatted["data"]:
@@ -33,6 +34,13 @@ def find_coin(coin_input,formatted):
                return item
      sys.exit("Invalid Coin! ")
 
+
+def type_text(text,speed=0.03):
+    for char in text:
+        sys.stdout.write(char)
+        sys.stdout.flush()
+        time.sleep(0.03)
+    print()
 
 def rank_coin(dict_data):
      return dict_data["rank"]
