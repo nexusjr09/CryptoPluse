@@ -10,7 +10,7 @@ load_dotenv(dotenv_path)
 
 def main():
      
-     coin_input = input("Enter the coin: ").lower()
+     coin_input = input("Enter the coin: ").lower().strip()
      api_key = os.getenv("COINCAP_API_KEY")
      url =  f"https://rest.coincap.io/v3/assets?apiKey={api_key}"
      try:
@@ -40,10 +40,10 @@ def find_coin(coin_input,formatted):
      for item in formatted["data"]:
           if coin_input== item["symbol"].lower() or coin_input == item["name"].lower():
                return item
-     sys.exit(f"🔴 Unable to find the coin called >> {coin_input}")
+     sys.exit(f"🔴 Unable to find the COIN called >> {coin_input}")
 
 
-def type_text(text):
+def type_text(text,speed=0.03):
     for char in text:
         sys.stdout.write(char)
         sys.stdout.flush()
