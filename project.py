@@ -3,6 +3,7 @@ import time
 import os
 import sys
 from numerize import numerize
+from tabulate import tabulate
 from dotenv import find_dotenv,load_dotenv
 
 dotenv_path = find_dotenv()
@@ -25,16 +26,18 @@ def main():
      formatted = data.json()
      dict_data = find_coin(coin_input,formatted)
 
-     print("Fetching data....🔄")
+     print("\nFetching data....🔄")
      time.sleep(2)
-     print("----------------------------")
-     type_text(f"Rank: {rank_coin(dict_data)}",0.03)
-     type_text(f"Price: ${coin_price(dict_data)}",0.03)
-     type_text(f"Circulating Supply: {supply(dict_data)}",0.03)
-     type_text(f"Max Supply: {maxsupply(dict_data)}",0.03)
-     type_text(f"Volume USD: {volume_usd(dict_data)}",0.03)
-     type_text(f"24Hr Change percent: {change_percent(dict_data)}%",0.03)
-     print("-------------------------------")
+     coin_stats = [
+    ["Rank", rank_coin(dict_data)],
+    ["Price", f"${coin_price(dict_data)}"],
+    ["Circulating Supply", supply(dict_data)],
+    ["Max Supply", maxsupply(dict_data)],
+    ["Volume (USD)", volume_usd(dict_data)],
+    ["24h Change", f"{change_percent(dict_data)}%"]
+    ]
+     stats_table = tabulate(coin_stats, tablefmt="fancy_grid")
+     print(stats_table)
      top5_coins(formatted)
 
 def find_coin(coin_input,formatted):
@@ -44,12 +47,6 @@ def find_coin(coin_input,formatted):
      sys.exit(f"🔴 Unable to find the COIN called >> {coin_input}")
 
 
-def type_text(text,speed=0.03):
-    for char in text:
-        sys.stdout.write(char)
-        sys.stdout.flush()
-        time.sleep(0.03)
-    print()
 
 def rank_coin(dict_data):
      return dict_data["rank"]
@@ -76,19 +73,24 @@ def change_percent(dict_data):
      return round(float(dict_data["changePercent24Hr"]),3)
 
 def top5_coins(formatted):
-     data = input("Do you want to see the Top 5 Coins?(y/n): ").lower()
+     data = input("\nDo you want to see the Top 5 Coins?(y/n): ").lower()
      if data == "yes" or data == "y" or data == "yeh" or data == "sure":
-          print("---------------------")
+          my_list=[]
           for item in formatted["data"]:
                if int(item["rank"])<=5:
-                    
-                    print(f"{item["rank"]}| {item["symbol"]} | ${round(float(item["priceUsd"]))} | {round(float(item["changePercent24Hr"]),3)}% ")
-          sys.exit("-------------------")
+                    my_list.append([
+    f"{item["rank"]}",
+    f"{item["symbol"]}",
+    f"${round(float(item["priceUsd"]),2)}",
+    f"{round(float(item["changePercent24Hr"]),2)}%"
+])
+                    headers = ["RANK","SYMBOL","PRICE IN USD","CHANGE IN %"]
+          stats_table = tabulate(my_list,headers=headers,tablefmt="fancy_grid")
+          print(stats_table)  
+          sys.exit()   
+     
 
      sys.exit("As you Say! ")
-
-
-
 
 if __name__ == "__main__":
      main()
