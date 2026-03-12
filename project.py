@@ -58,10 +58,16 @@ def coin_price(dict_data):
      return round(float(dict_data["priceUsd"]),2)
 
 def supply(dict_data):
-     return numerize.numerize(float(dict_data["supply"]))
+     if dict_data["supply"] == None:
+          return "None"
+     else:
+          return numerize.numerize(float(dict_data["supply"]))
 
 def maxsupply(dict_data):
-     return numerize.numerize(float(dict_data["maxSupply"]))
+     if dict_data["maxSupply"] == None:
+          return "None"
+     else: 
+          return numerize.numerize(float(dict_data["maxSupply"]))
 
 def volume_usd(dict_data):
      return numerize.numerize(float(dict_data["volumeUsd24Hr"]))
@@ -72,11 +78,14 @@ def change_percent(dict_data):
 def top5_coins(formatted):
      data = input("Do you want to see the Top 5 Coins?(y/n): ").lower()
      if data == "yes" or data == "y" or data == "yeh" or data == "sure":
+          print("---------------------")
           for item in formatted["data"]:
                if int(item["rank"])<=5:
+                    
                     print(f"{item["rank"]}| {item["symbol"]} | ${round(float(item["priceUsd"]))} | {round(float(item["changePercent24Hr"]),3)}% ")
-          sys.exit()
-     sys.exit("Okay !!")
+          sys.exit("-------------------")
+
+     sys.exit("As you Say! ")
 
 
 
