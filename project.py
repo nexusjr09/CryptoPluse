@@ -8,6 +8,7 @@ dotenv_path = find_dotenv()
 load_dotenv(dotenv_path)
 
 def main():
+     
      coin_input = input("Enter the coin: ").lower()
      api_key = os.getenv("COINCAP_API_KEY")
      url =  f"https://rest.coincap.io/v3/assets?apiKey={api_key}"
@@ -22,7 +23,7 @@ def main():
      print(f"Circulating Supply: {supply(dict_data)}")
      print(f"Max Supply: {maxsupply(dict_data)}")
      print(f"Volume USD: {volume_usd(dict_data)}")
-     print(f"Change percent: {change_percent(dict_data)}%")
+     print(f"24Hr Change percent: {change_percent(dict_data)}%")
      print("<------------------------------->")
 
 
