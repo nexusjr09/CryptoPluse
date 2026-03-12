@@ -13,7 +13,15 @@ def main():
      coin_input = input("Enter the coin: ").lower()
      api_key = os.getenv("COINCAP_API_KEY")
      url =  f"https://rest.coincap.io/v3/assets?apiKey={api_key}"
-     data = requests.get(url)
+     try:
+          data = requests.get(url)
+     except requests.exceptions.ConnectionError:
+          print("❌ Unable to connect to API")
+     except requests.exceptions.Timeout:
+          print("❌ API request timed out")
+     except ValueError:
+          print("❌ Invalid JSON response")
+
      formatted = data.json()
      dict_data = find_coin(coin_input,formatted)
 
@@ -32,10 +40,10 @@ def find_coin(coin_input,formatted):
      for item in formatted["data"]:
           if coin_input== item["symbol"].lower() or coin_input == item["name"].lower():
                return item
-     sys.exit("Invalid Coin! ")
+     sys.exit(f"🔴 Unable to find the coin called >> {coin_input}")
 
 
-def type_text(text,speed=0.03):
+def type_text(text):
     for char in text:
         sys.stdout.write(char)
         sys.stdout.flush()
