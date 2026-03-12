@@ -16,14 +16,16 @@ def main():
      url =  f"https://rest.coincap.io/v3/assets?apiKey={api_key}"
      try:
           data = requests.get(url)
-     except requests.exceptions.ConnectionError:
-          print("❌ Unable to connect to API")
-     except requests.exceptions.Timeout:
-          print("❌ API request timed out")
-     except ValueError:
-          print("❌ Invalid JSON response")
+          formatted = data.json()
 
-     formatted = data.json()
+     except requests.exceptions.ConnectionError:
+          sys.exit("❌ Unable to connect to API")
+     except requests.exceptions.Timeout:
+          sys.exit("❌ API request timed out")
+     except ValueError:
+          sys.exit("❌ Invalid JSON response")
+
+     
      dict_data = find_coin(coin_input,formatted)
 
      print("\nFetching data....🔄")
@@ -79,16 +81,16 @@ def top5_coins(formatted):
           for item in formatted["data"]:
                if int(item["rank"])<=5:
                     my_list.append([
-    f"{item["rank"]}",
+    int(item["rank"]), #not a string so not using f" "
     f"{item["symbol"]}",
     f"${round(float(item["priceUsd"]),2)}",
     f"{round(float(item["changePercent24Hr"]),2)}%"
 ])
-                    headers = ["RANK","SYMBOL","PRICE IN USD","CHANGE IN %"]
+          my_list.sort()
+          headers = ["RANK","SYMBOL","PRICE IN USD","CHANGE IN %"]
           stats_table = tabulate(my_list,headers=headers,tablefmt="fancy_grid")
           print(stats_table)  
-          sys.exit()   
-     
+          sys.exit()
 
      sys.exit("As you Say! ")
 
