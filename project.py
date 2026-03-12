@@ -23,6 +23,7 @@ def main():
      print(f"Max Supply: {maxsupply(dict_data)}")
      print(f"Volume USD: {volume_usd(dict_data)}")
      print(f"Change percent: {change_percent(dict_data)}%")
+     print("<------------------------------->")
 
 
 def find_coin(coin_input,formatted):
