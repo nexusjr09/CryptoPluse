@@ -75,7 +75,7 @@ def change_percent(dict_data):
      return round(float(dict_data["changePercent24Hr"]),3)
 
 def top5_coins(formatted):
-     data = input("\nDo you want to see the Top 5 Coins?(y/n): ").lower()
+     data = input("\nDo you want to see the Top 5 Coins currently in Market?(y/n): ").lower()
      if data == "yes" or data == "y" or data == "yeh" or data == "sure":
           my_list=[]
           for item in formatted["data"]:
