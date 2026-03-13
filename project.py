@@ -101,14 +101,20 @@ def compare_coins(formatted):
           coin1 = input(Fore.GREEN+"\nEnter coin1: "+Style.RESET_ALL).lower().strip()
           for item in formatted["data"]:
                if coin1 == item["name"].lower() or coin1 == item["symbol"].lower():
-                    my_list.append([int(item["rank"]),item["name"],f"${round(float(item["priceUsd"]),2)}",f"{round(float(item["changePercent24Hr"]),2)}%"])
-               
-                    coin2 = input(Fore.GREEN+"Enter coin2: "+Style.RESET_ALL).lower().strip()
-                    for item in formatted["data"]:
-                         if coin2 == item["name"].lower() or coin2 == item["symbol"].lower():
-                              my_list.append([int(item["rank"]),item["name"],f"${round(float(item["priceUsd"]),2)}",f"{round(float(item["changePercent24Hr"]),2)}%"])
-                              headers = ["RANK","NAME","PRICE IN USD","CHANGE PERCENT (24hr)"]
-                         sys.exit("Invalid Coin 2")
+                    my_list.append([int(item["rank"]),item["name"],f"${round(float(item['priceUsd']),2)}",f"{round(float(item['changePercent24Hr']),2)}%"])
+                    break #when thsi break is added it now automatically skips else function. 
+          else:
+               sys.exit("Invalid coin 1🛑")
+
+          coin2 = input(Fore.GREEN+"Enter coin2: "+Style.RESET_ALL).lower().strip()
+          for item in formatted["data"]:
+               if coin2 == item["name"].lower() or coin2 == item["symbol"].lower():
+                    my_list.append([int(item["rank"]),item["name"],f"${round(float(item['priceUsd']),2)}",f"{round(float(item['changePercent24Hr']),2)}%"])
+                    break #if break was not there it wouldn't skip else function.
+          else:
+               sys.exit("Invalid Coin 2🛑")
+
+          headers = ["RANK","NAME","PRICE IN USD","CHANGE PERCENT (24hr)"]
           stats_table = tabulate(my_list,headers=headers,tablefmt="fancy_grid")
           print(f"\n{stats_table}")
      sys.exit()
