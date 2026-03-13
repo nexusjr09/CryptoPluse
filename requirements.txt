@@ -1,7 +1,7 @@
 REQUIRED LIBRARIES FOR THIS CODE: 
 
-default os
 requests
-pytest
-rich
 numerize
+tabulate
+python-dotenv
+colorama
