@@ -5,13 +5,14 @@ import sys
 from numerize import numerize
 from tabulate import tabulate
 from dotenv import find_dotenv,load_dotenv
+from colorama import Fore, Style
 
 dotenv_path = find_dotenv()
 load_dotenv(dotenv_path)
 
 def main():
      
-     coin_input = input("Enter the coin: ").lower().strip()
+     coin_input = input(Fore.RED+"Enter the coin: "+Style.RESET_ALL).lower().strip()
      api_key = os.getenv("COINCAP_API_KEY")
      url =  f"https://rest.coincap.io/v3/assets?apiKey={api_key}"
      try:
@@ -28,7 +29,7 @@ def main():
      
      dict_data = find_coin(coin_input,formatted)
 
-     print("\nFetching data....🔄")
+     print(Fore.GREEN+"\nFetching data....🔄"+Style.RESET_ALL)
      time.sleep(2)
      coin_stats = [
     ["Rank", rank_coin(dict_data)],
@@ -41,6 +42,7 @@ def main():
      stats_table = tabulate(coin_stats, tablefmt="fancy_grid")
      print(stats_table)
      top5_coins(formatted)
+     compare_coins(formatted)
 
 def find_coin(coin_input,formatted):
      for item in formatted["data"]:
@@ -75,7 +77,7 @@ def change_percent(dict_data):
      return round(float(dict_data["changePercent24Hr"]),3)
 
 def top5_coins(formatted):
-     data = input("\nDo you want to see the Top 5 Coins currently in Market?(y/n): ").lower()
+     data = input(Fore.RED+"\nDo you want to see the Top 5 Coins currently in Market?(y/n): "+Style.RESET_ALL).lower()
      if data == "yes" or data == "y" or data == "yeh" or data == "sure":
           my_list=[]
           for item in formatted["data"]:
@@ -90,12 +92,26 @@ def top5_coins(formatted):
           headers = ["RANK","SYMBOL","PRICE IN USD","CHANGE IN %"]
           stats_table = tabulate(my_list,headers=headers,tablefmt="fancy_grid")
           print(stats_table)  
-          sys.exit()
+          
 
-     sys.exit("As you Say! ")
+def compare_coins(formatted):
+     data = input(Fore.RED+"\nDo you want to compare any two coins? (y/n)"+Style.RESET_ALL).strip().lower()
+     my_list = []
+     if data == "y" or data == "yes":
+          coin1 = input(Fore.GREEN+"\nEnter coin1: "+Style.RESET_ALL)
+          for item in formatted["data"]:
+               if coin1 == item["name"].lower() or coin1 == item["symbol"].lower():
+                    my_list.append([int(item["rank"]),item["name"],f"${round(float(item["priceUsd"]),2)}",f"{round(float(item["changePercent24Hr"]),2)}%"])
+                    coin2 = input(Fore.GREEN+"Enter coin2: "+Style.RESET_ALL).lower().strip()
+                    for item in formatted["data"]:
+                         if coin2 == item["name"].lower() or coin2 == item["symbol"].lower():
+                              my_list.append([int(item["rank"]),item["name"],f"${round(float(item["priceUsd"]),2)}",f"{round(float(item["changePercent24Hr"]),2)}%"])
+                              headers = ["RANK","NAME","PRICE IN USD","CHANGE PERCENT (24hr)"]
+          stats_table = tabulate(my_list,headers=headers,tablefmt="fancy_grid")
+          print(f"\n{stats_table}")
+     sys.exit()
 
-def compare_coins():
-     ...
+
 
 if __name__ == "__main__":
      main()
