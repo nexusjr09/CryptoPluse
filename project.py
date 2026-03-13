@@ -94,5 +94,8 @@ def top5_coins(formatted):
 
      sys.exit("As you Say! ")
 
+def compare_coins():
+     ...
+
 if __name__ == "__main__":
      main()
