@@ -1,5 +1,5 @@
 # CryptoPluse - Crypto Coin Tracker
-#### Video Demo: <URL HERE>
+#### Video Demo: https://youtu.be/D_i6wXY5PVI?si=DFcLCnrDPK6Q50E3
 #### Description:
 
 CryptoPluse is a Python-based command-line tool that fetches live cryptocurrency data directly from the CoinCap API. The program allows you to look up any cryptocurrency by name or symbol, view detailed statistics, see the current top 5 coins in the market, and compare any two coins side by side — all displayed in a clean, colorful terminal interface using formatted tables.
