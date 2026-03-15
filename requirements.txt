@@ -1,0 +1,7 @@
+REQUIRED LIBRARIES FOR THIS CODE: 
+
+requests
+numerize
+tabulate
+python-dotenv
+colorama
